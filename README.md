@@ -22,8 +22,8 @@ Once that command has completed, we may start the application:
 
 `docker-compose up`
 
-Local Setup
-===========
+Local Setup (Optional)
+======================
 
 To begin local development, you will need:
 
