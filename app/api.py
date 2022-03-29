@@ -1,6 +1,10 @@
 from fastapi import FastAPI
+from app.common.controllers import user
 
 app = FastAPI(title="CRM API", version="0.0.1", description="API to crm app")
+
+
+app.include_router(user.router)
 
 
 @app.get("/")

@@ -3,9 +3,11 @@ from app.common.models import MD_TABLE_ARGS
 from sqlalchemy import Column, String, func, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
-import hashlib
+from passlib.context import CryptContext
 
-# TODO: continue defining user and make base model
+pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
+
+
 class User(Base):
     __tablename__ = "user"
     __table_args__ = (MD_TABLE_ARGS,)
@@ -26,16 +28,15 @@ class User(Base):
         return self._password
 
     @password.setter
-    def password(self, pwd: str):
+    def password(self, password: str):
         """Password Setter"""
-        self._password = hashlib.sha256(pwd.encode()).hexdigest().lower()
+        self._password = pwd_context.hash(password)
 
-    def verify_password(self, password: str) -> bool:
+    def verify_password(self, plain_password: str, hashed_password: str) -> bool:
         """
         Accept a password and hash the value while comparing the hashed
         value to the password hash contained in the database.
         """
         if self.password is None:
             return False
-        pwd_e = password.encode()
-        return hashlib.sha256(pwd_e).hexdigest().lower() == self.password
+        return pwd_context.verify(plain_password, hashed_password)
