@@ -8,11 +8,12 @@ from app.common.models.user import User
 from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.security.oauth2 import OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
+from app.auth.schemas.token import Token
 
 router = APIRouter(tags=["Authentication"])
 
 
-@router.post("/login")
+@router.post("/login", response_model=Token)
 def login(
     user_credentials: OAuth2PasswordRequestForm = Depends(),
     db: Session = Depends(get_db),
@@ -42,7 +43,7 @@ def login(
 
 # This endpoint will be deleted, just for testing purposes
 @router.get("/login/test")
-def login_test(user_id: str = Depends(get_current_user)):
+def login_test(current_user: User = Depends(get_current_user)):
     # User needs to be authenticated
-    print(user_id)
+    print(current_user)
     return {"detail": "User authorized"}
