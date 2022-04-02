@@ -1,11 +1,10 @@
 from fastapi import FastAPI
-from app.common.database import engine
-from app.common.models.user import User
-
-
-User.metadata.create_all(bind=engine)
+from app.common.controllers import user
 
 app = FastAPI(title="CRM API", version="0.0.1", description="API to crm app")
+
+
+app.include_router(user.router)
 
 
 @app.get("/")
