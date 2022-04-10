@@ -37,3 +37,25 @@ To begin local development, you will need:
 
 To deactivate virtual env\
 `$ pyenv deactivate`
+
+
+Alembic
+=======
+
+To run migration in alembic take into account the followings commands
+
+1. Enter the container:
+    * `docker-compose exec api bash`
+2. Create revision
+    * `alembic revision -m "version ticket - this migrations add a new table to the md schema"`
+2. Stamp revision
+    * `alembic stamp <down-revision>`
+3. Upgrade revision
+    * `alembic upgrade +1`
+4. If you desire to upgrade all revisions
+    * `alembic upgrade head`
+
+* Note: To downgrade revision, please stamp to the revision you want and check with:
+    * `alembic downgrade -1`
+
+If you want to check more about alembic please read the docs: [Alembic](https://alembic.sqlalchemy.org/en/latest/)
