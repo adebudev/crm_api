@@ -7,7 +7,6 @@ from app.common.models.user import User
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
-
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=UserResponse)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     new_user = User(**user.dict())
