@@ -1,11 +1,13 @@
 from fastapi import (FastAPI)
 from app.common.controllers import user
-from app.common.controllers.auth import auth
+from app.auth.controllers import auth
+from app.common.controllers import reset_password
 
 app = FastAPI(title="CRM API", version="0.0.1", description="API to crm app")
 
 app.include_router(user.router)
 app.include_router(auth.router)
+app.include_router(reset_password.router)
 
 @app.get("/")
 async def root():

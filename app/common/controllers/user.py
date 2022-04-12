@@ -5,7 +5,9 @@ from app.common.database import get_db
 from app.common.schemas.user import UserCreate, UserResponse
 from app.common.models.user import User
 
-router = APIRouter(prefix="/users", tags=["Users"])
+
+router = APIRouter(prefix="/user", tags=["Users"])
+
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=UserResponse)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
