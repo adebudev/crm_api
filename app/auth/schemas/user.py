@@ -2,5 +2,10 @@ from pydantic import BaseModel, EmailStr
 
 
 class UserLogIn(BaseModel):
-    email: EmailStr
+    message: str
+    status: str
+    token_type: str
+    
+class Credentials(BaseModel):
+    username: EmailStr
     password: str
