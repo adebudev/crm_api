@@ -1,4 +1,3 @@
-from operator import is_not
 from uuid import UUID
 from fastapi import Depends, APIRouter, status, HTTPException
 from fastapi.responses import JSONResponse
@@ -25,9 +24,10 @@ async def send_email_async(email_to: EmailStr, body: dict):
     await fm.send_message(message, template_name='email.html')
 
 
-@router.post('/send-email', response_model=SendEmail)
+@router.post('/send-email', status_code=status.HTTP_200_OK, response_model=SendEmail)
 async def send_email_asynchronous(user_email: Email, db: Session = Depends(get_db)) -> SendEmail:
-    user: User = db.query(User).filter(User.email == user_email.email).one_or_none()
+    user: User = db.query(User).filter(
+        User.email == user_email.email).one_or_none()
     if not user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
@@ -43,7 +43,7 @@ async def send_email_asynchronous(user_email: Email, db: Session = Depends(get_d
     return JSONResponse(content={"status_code": status.HTTP_200_OK, "message": "send email success", "email": user.email})
 
 
-@router.put('/new-password/{id}', response_model=HttpResponse)
+@router.put('/new-password/{id}', status_code=status.HTTP_200_OK, response_model=HttpResponse)
 async def new_password_user(password: ResetPassword, id: UUID, db: Session = Depends(get_db)):
     user = db.query(User).filter(User.id == id).one_or_none()
     if not user:

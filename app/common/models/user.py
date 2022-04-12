@@ -13,8 +13,15 @@ class User(Base):
     __table_args__ = (MD_TABLE_ARGS,)
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    first_name = Column(String, nullable=False)
+    second_name = Column(String, nullable=True)
+    last_name = Column(String, nullable=False)
     email = Column(String, nullable=False, unique=True)
     _password = Column(String, nullable=False)
+    phone = Column(String, nullable=False)
+    address = Column(String, nullable=False)
+    country = Column(String, nullable=True)
+    city = Column(String, nullable=True)
     created_at = Column(
         DateTime, nullable=False, server_default=func.now(), default=func.now()
     )
@@ -31,6 +38,7 @@ class User(Base):
     def password(self, password: str):
         """Password Setter"""
         self._password = pwd_context.hash(password)
+    
 
     def verify_password(self, plain_password: str) -> bool:
         """
