@@ -3,39 +3,25 @@ from pydantic import BaseModel, EmailStr
 from datetime import datetime
 
 
-class UserCreate(BaseModel):
+class UserBase(BaseModel):
     first_name: str
     second_name: str
     last_name: str
     email: EmailStr
+    phone: str
+    address: str
+    country: str
+    city: str
+
+class UserCreate(UserBase):
     password: str
-    phone: str
-    address: str
-    country: str
-    city: str
 
-class UserUpdate(BaseModel):
-    first_name: str
-    second_name: str
-    last_name: str
-    email: EmailStr
-    phone: str
-    address: str
-    country: str
-    city: str
+class UserUpdate(UserBase):
+    pass
 
-class UserResponse(BaseModel):
+class UserResponse(UserBase):
     id: UUID
-    first_name: str
-    second_name: str
-    last_name: str
-    email: EmailStr
-    phone: str
-    address: str
-    country: str
-    city: str
     created_at: datetime
-
     class Config:
         orm_mode = True
 

@@ -48,11 +48,14 @@ To run migration in alembic take into account the followings commands
     * `docker-compose exec api bash`
 2. Create revision
     * `alembic revision -m "version ticket - this migrations add a new table to the md schema"`
-2. Stamp revision
+    
+    Autogenerate script
+    * `alembic revision --autogenerate -m "version ticket - this migrations add a new table to the md schema"`
+3. Stamp revision
     * `alembic stamp <down-revision>`
-3. Upgrade revision
+4. Upgrade revision
     * `alembic upgrade +1`
-4. If you desire to upgrade all revisions
+5. If you desire to upgrade all revisions
     * `alembic upgrade head`
 
 * Note: To downgrade revision, please stamp to the revision you want and check with:

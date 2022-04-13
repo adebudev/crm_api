@@ -1,16 +1,18 @@
-from app.common.database import Base
-from app.common.models import MD_TABLE_ARGS
+import uuid
 from sqlalchemy import Column, String, func, DateTime
 from sqlalchemy.dialects.postgresql import UUID
-import uuid
+from sqlalchemy.orm import relationship
 from passlib.context import CryptContext
+
+from app.common.database import Base
+from app.common.models import MD_TABLE_ARGS
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
 
 class User(Base):
-    __tablename__ = "user"
-    __table_args__ = (MD_TABLE_ARGS,)
+    __tablename__ = "users"
+    __table_args__ = (MD_TABLE_ARGS)
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
     first_name = Column(String, nullable=False)
@@ -28,6 +30,7 @@ class User(Base):
     modified_on = Column(
         DateTime, nullable=False, server_default=func.now(), default=func.now()
     )
+    quotes = relationship("Quote", cascade="all, delete")
 
     @property
     def password(self) -> str:
@@ -38,7 +41,6 @@ class User(Base):
     def password(self, password: str):
         """Password Setter"""
         self._password = pwd_context.hash(password)
-    
 
     def verify_password(self, plain_password: str) -> bool:
         """

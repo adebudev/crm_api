@@ -9,12 +9,14 @@ from app.common.schemas.user import UserCreate, UserResponse, UserUpdate, HttpRe
 from app.common.models.user import User
 
 
-router = APIRouter(prefix="/user", tags=["Users"])
+router = APIRouter(prefix="/users", tags=["Users"])
 
 
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=UserResponse)
 def create_user(user: UserCreate, db: Session = Depends(get_db)):
     new_user = User(**user.dict())
+    new_user.country = str(new_user.country).upper()
+    new_user.city = str(new_user.city).upper()
     db.add(new_user)
     db.commit()
     db.refresh(new_user)
@@ -27,7 +29,7 @@ def get_all_user(user: User = Depends(get_access_user),  db: Session = Depends(g
 
 
 @router.get("/{id}", status_code=status.HTTP_200_OK, response_model=UserResponse)
-def get_user(id: UUID, user: User = Depends(get_access_user), db: Session = Depends(get_db)):
+def get_user(id: UUID, user: User = Depends(get_access_user)):
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -54,8 +56,8 @@ def update_user(up_user: UserUpdate, id: UUID, user: User = Depends(get_access_u
     user.email = up_user.email
     user.address = up_user.address
     user.phone = up_user.phone
-    user.city = up_user.city
-    user.country = up_user.country
+    user.city = str(up_user.city).upper()
+    user.country = str(up_user.country).upper()
     db.add(user)
     db.commit()
     db.refresh(user)
@@ -72,4 +74,4 @@ def delete_user(id: UUID, user: User = Depends(get_access_user), db: Session = D
     db.delete(user)
     db.commit()
     db.close()
-    return JSONResponse(content={"status_code": status.HTTP_200_OK, "message": "password has been successfully updated"})
+    return JSONResponse(content={"status_code": status.HTTP_200_OK, "message": "user delete successfully"})
