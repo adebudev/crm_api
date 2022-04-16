@@ -10,6 +10,11 @@ class Settings(BaseSettings):
     secret_key: str
     algorithm: str
     access_token_expire_minutes: int
+    postgres_test_password: str
+    postgres_test_user: str
+    postgres_test_db: str
+    database_test_hostname: str
+    postgres_test_port: str
 
     class Config:
         env_file = "environments/development.env"
