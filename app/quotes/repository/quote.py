@@ -1,0 +1,91 @@
+from uuid import UUID, uuid4
+from fastapi import Depends, status, HTTPException
+from fastapi.responses import JSONResponse
+from sqlalchemy.orm import Session
+
+from app.quote.models.comment import Comment
+from app.quote.models.detail import Detail
+from app.quote.models.tax import Tax
+from app.quote.models.item import Item
+from app.quote.models.quote import Quote
+
+from app.quote.schemas.quote_dto import QuoteBase, QuoteCreate, QuoteResponse
+from app.common.postgres_conector import get_db_session
+
+
+async def create(quote: QuoteCreate, db: Session = Depends(get_db_session)) -> any:
+    new_quote = Quote(**quote.quote.dict())
+    # new_quote.__dict__.update(quote.quote.dict())
+    # new_quote.exp_date = quote.quote.exp_date
+    # new_quote.quote_status = quote.quote.quote_status
+    # new_quote.user_id = quote.quote.user_id
+    # new_quote.customer_id = uuid4()
+
+    db.add(new_quote)
+    db.commit()
+    # new_detail = Detail()
+    # new_detail.__dict__.update(quote.detail.dict())
+    # new_detail.quote_id = "3fa85f64-5717-4562-b3fc-2c963f66afa7"
+    # db.add(new_detail)
+
+    # print(new_detail)
+    # new_comment = Comment()
+    # new_comment.__dict__.update(quote.comment.dict())
+
+    # new_taxes = [Tax(**tax.dict()) for tax in quote.taxes.taxes]
+    # new_items = [Item(**item.dict()) for item in quote.items]
+    # print(new_items, new_taxes, new_comment, new_detail, new_quote)
+
+    # db.add_all([new_quote, new_detail, new_comment] + new_taxes + new_items)
+
+    # # new_quote.details = new_detail
+    # new_quote.comments = new_comment
+    # for item in new_items:
+    #     new_quote.items.append(item)
+    # for tax in new_taxes:
+    #     new_quote.taxes.append(tax)
+
+    # db.commit()
+    # db.refresh(new_quote)
+    return "new_quote"
+
+
+async def get_all(db: Session = Depends(get_db_session)):
+    return db.query(Quote).all()
+
+
+async def update(update: QuoteCreate, id: UUID, db: Session = Depends(get_db_session)):
+    quote = db.query(Quote).filter(Quote.id == id).one_or_none()
+    if not quote:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Quote with id: {} does not exist".format(id),
+        )
+
+    for var, value in vars(quote).items():
+        setattr(quote, var, value) if value else None
+
+    quote.quote_num = update.quote_num
+    db.add(quote)
+    db.commit()
+    db.refresh(quote)
+    return quote
+
+
+async def delete(id: UUID, db: Session = Depends(get_db_session)):
+    quote = db.query(Quote).filter(Quote.id == id).one_or_none()
+    if not quote:
+        raise HTTPException(
+            status_code=status.HTTP_400_BAD_REQUEST,
+            detail="Quote with id: {} does not exist".format(id),
+        )
+
+    db.delete(quote)
+    db.commit()
+    db.close()
+    return JSONResponse(
+        content={
+            "status_code": status.HTTP_200_OK,
+            "message": "quote delete successfully",
+        }
+    )
