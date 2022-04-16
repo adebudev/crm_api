@@ -3,14 +3,12 @@ from fastapi import Depends, status, HTTPException
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
 
-from app.quote.schemas.item_dto import ItemCreate, ItemResponse
-from app.quote.models.item import Item
-from app.common.postgres_conector import get_db_session
+from app.quotes.schemas.item_dto import ItemCreate, ItemResponse
+from app.quotes.models.item import Item
+from app.common.database import get_db
 
 
-async def create(
-    item: ItemCreate, db: Session = Depends(get_db_session)
-) -> ItemResponse:
+async def create(item: ItemCreate, db: Session = Depends(get_db)) -> ItemResponse:
     new_item = Item(**item.dict())
     db.add(new_item)
     db.commit()
@@ -19,11 +17,11 @@ async def create(
     return new_item
 
 
-async def get_all(db: Session = Depends(get_db_session)):
+async def get_all(db: Session = Depends(get_db)):
     return db.query(Item).all()
 
 
-async def update(update: ItemCreate, id: UUID, db: Session = Depends(get_db_session)):
+async def update(update: ItemCreate, id: UUID, db: Session = Depends(get_db)):
     item = db.query(Item).filter(Item.id == id).one_or_none()
     if not item:
         raise HTTPException(
@@ -44,7 +42,7 @@ async def update(update: ItemCreate, id: UUID, db: Session = Depends(get_db_sess
     return item
 
 
-async def delete(id: UUID, db: Session = Depends(get_db_session)):
+async def delete(id: UUID, db: Session = Depends(get_db)):
     item = db.query(Item).filter(Item.id == id).one_or_none()
     if not item:
         raise HTTPException(
