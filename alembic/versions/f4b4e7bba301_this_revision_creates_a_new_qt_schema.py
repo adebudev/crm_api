@@ -17,8 +17,8 @@ depends_on = None
 
 
 def upgrade():
-    pass
+    op.execute("CREATE SCHEMA IF NOT EXISTS qt;")
 
 
 def downgrade():
-    pass
+    op.execute("DROP SCHEMA IF EXISTS qt CASCADE;")
