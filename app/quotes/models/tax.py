@@ -4,7 +4,10 @@ from sqlalchemy import Column, ForeignKey, func, DateTime, String, Float
 from sqlalchemy.orm import relationship
 
 from app.quotes.models import QT_TABLE_ARGS
-from app.common.database import Base
+
+from sqlalchemy.ext.declarative import declarative_base
+
+Base = declarative_base()
 
 
 class Tax(Base):

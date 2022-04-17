@@ -7,7 +7,7 @@ from app.quotes.repository.quote import create, get_all, update, delete
 router = APIRouter(prefix="/quotes", tags=["Quotes"])
 
 
-@router.post("/", status_code=status.HTTP_201_CREATED, response_model=str)
+@router.post("/", status_code=status.HTTP_201_CREATED, response_model=QuoteResponse)
 async def create_quote(quote: QuoteCreate = Depends(create)):
     return quote
 

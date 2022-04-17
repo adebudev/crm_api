@@ -13,16 +13,18 @@ from app.quotes.schemas.quote_dto import QuoteBase, QuoteCreate, QuoteResponse
 from app.common.database import get_db
 
 
-async def create(quote: QuoteCreate, db: Session = Depends(get_db)) -> any:
+async def create(quote: QuoteCreate, db: Session = Depends(get_db)) -> QuoteResponse:
     new_quote = Quote(**quote.quote.dict())
+    db.add(new_quote)
+    db.commit()
+    db.refresh(new_quote)
+    print("JVC-", new_quote.__dict__)
     # new_quote.__dict__.update(quote.quote.dict())
     # new_quote.exp_date = quote.quote.exp_date
     # new_quote.quote_status = quote.quote.quote_status
     # new_quote.user_id = quote.quote.user_id
     # new_quote.customer_id = uuid4()
 
-    db.add(new_quote)
-    db.commit()
     # new_detail = Detail()
     # new_detail.__dict__.update(quote.detail.dict())
     # new_detail.quote_id = "3fa85f64-5717-4562-b3fc-2c963f66afa7"
@@ -47,7 +49,7 @@ async def create(quote: QuoteCreate, db: Session = Depends(get_db)) -> any:
 
     # db.commit()
     # db.refresh(new_quote)
-    return "new_quote"
+    return new_quote
 
 
 async def get_all(db: Session = Depends(get_db)):

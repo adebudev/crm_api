@@ -3,11 +3,11 @@ from uuid import UUID
 from typing import List
 from datetime import datetime
 from pydantic import BaseModel
-from app.quote.schemas.comment_dto import CommentCreate
+from app.quotes.schemas.comment_dto import CommentCreate
 
-from app.quote.schemas.detail_dto import DetailCreate
-from app.quote.schemas.item_dto import ItemCreate
-from app.quote.schemas.tax_dto import TaxCreate
+from app.quotes.schemas.detail_dto import DetailCreate
+from app.quotes.schemas.item_dto import ItemCreate
+from app.quotes.schemas.tax_dto import TaxCreate
 
 
 class QuoteBase(BaseModel):
@@ -31,6 +31,9 @@ class QuoteResponse(BaseModel):
     quote_num: int
     user_id: UUID
     created_at: datetime
+    customer_id: UUID
+    exp_date: datetime
+    quote_status: bool
 
     class Config:
         orm_mode = True
