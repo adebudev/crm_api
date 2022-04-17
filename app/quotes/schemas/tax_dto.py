@@ -6,20 +6,18 @@ from datetime import datetime
 
 class TaxBase(BaseModel):
     tax_name: str
-    tax_percentage: float
+    tax_value: float
+    created_at: datetime
+    modified_on: datetime
 
 
 class TaxCreate(TaxBase):
-    pass
+    quote_id: UUID
 
 
 class TaxResponse(TaxBase):
     id: UUID
-    iva: float
-    diam_tax: float
-    contingency: float
-    other: float
-    detail_id: UUID
+    quote_id: UUID
 
     class Config:
         orm_mode = True

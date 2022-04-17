@@ -1,27 +1,34 @@
 import uuid
+from datetime import datetime
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import Column, ForeignKey, func, DateTime, String
-from sqlalchemy.orm import relationship
-from app.quotes.models import QT_TABLE_ARGS, QT_SCHEMA
+from sqlalchemy import *
+from sqlalchemy.orm import registry
+from dataclasses import dataclass
 
-# from app.common.database import Base
+mapper_registry = registry()
 
-from sqlalchemy.ext.declarative import declarative_base
+comments = Table(
+    "comments",
+    mapper_registry.metadata,
+    Column("id", UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
+    Column("quote_id", Integer, ForeignKey("quotes.id")),
+    Column("comment", String, nullable=True),
+    Column("created_at", DateTime, nullable=False, server_default=func.now()),
+    Column("modified_on", DateTime, nullable=False, server_default=func.now()),
+    schema="qt",
+)
 
-Base = declarative_base()
+
+@dataclass
+class Comment:
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+    id: uuid.UUID
+    quote_id: uuid.UUID
+    comment: str
+    created_at: datetime
+    modified_on: datetime
 
 
-class Comment(Base):
-    __tablename__ = "comments"
-    __table_args__ = QT_TABLE_ARGS
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    comment = Column(String, nullable=False)
-    created_at = Column(
-        DateTime, nullable=False, server_default=func.now(), default=func.now()
-    )
-    modified_on = Column(
-        DateTime, nullable=False, server_default=func.now(), default=func.now()
-    )
-
-    quote_id = Column(UUID(as_uuid=True), ForeignKey(QT_SCHEMA + "quotes.id"))
+mapper_registry.map_imperatively(Comment, comments)

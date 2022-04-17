@@ -7,26 +7,18 @@ class ItemBase(BaseModel):
     item_name: str
     description: str
     quantity: int
-    unit_value: int
+    unit_value: float
+    created_at: datetime
+    modified_on: datetime
 
 
 class ItemCreate(ItemBase):
-    pass
+    quote_id: UUID
 
 
 class ItemResponse(ItemBase):
     id: UUID
-    quantity: int
-    unit_value: float
-    description: str
-    item_name: str
     quote_id: UUID
-    created_at: datetime
 
     class Config:
         orm_mode = True
-
-
-class HttpResponse(BaseModel):
-    status_code: str
-    message: str

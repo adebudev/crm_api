@@ -4,15 +4,18 @@ from pydantic import BaseModel
 
 
 class DetailBase(BaseModel):
-    valid_time: datetime
+    valid_time: int
     deliver_time: datetime
     currency_type: str
+    payment_terms: str
+    created_at: datetime
+    modified_on: datetime
     sub_total: float
-    total_expense: float
+    total: float
 
 
 class DetailCreate(DetailBase):
-    pass
+    quote_id: UUID
 
 
 class DetailResponse(DetailBase):

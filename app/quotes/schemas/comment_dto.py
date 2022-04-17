@@ -5,15 +5,16 @@ from pydantic import BaseModel
 
 class CommentBase(BaseModel):
     comment: str
+    created_at: datetime
+    modified_on: datetime
 
 
 class CommentCreate(CommentBase):
-    pass
+    quote_id: UUID
 
 
 class CommentResponse(CommentBase):
-    comment: str
-    created_at: datetime
+    id: UUID
 
     class Config:
         orm_mode = True

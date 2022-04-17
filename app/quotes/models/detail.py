@@ -1,30 +1,44 @@
 import uuid
+from datetime import datetime
 from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import Column, ForeignKey, func, DateTime, String, Float, Integer
-from sqlalchemy.orm import relationship
+from sqlalchemy import *
+from sqlalchemy.orm import registry
+from dataclasses import dataclass
 
-from app.quotes.models import QT_TABLE_ARGS
+mapper_registry = registry()
 
-from sqlalchemy.ext.declarative import declarative_base
+details = Table(
+    "details",
+    mapper_registry.metadata,
+    Column("id", UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
+    Column("quote_id", Integer, ForeignKey("quotes.id")),
+    Column("valid_time", Integer, nullable=True),
+    Column("deliver_time", DateTime, nullable=True),
+    Column("currency_type", String, nullable=True),
+    Column("payment_terms", String, nullable=True),
+    Column("sub_total", Float, nullable=True),
+    Column("total", Float, nullable=True),
+    Column("created_at", DateTime, nullable=False, server_default=func.now()),
+    Column("modified_on", DateTime, nullable=False, server_default=func.now()),
+    schema="qt",
+)
 
-Base = declarative_base()
+
+@dataclass
+class Detail:
+    def __init__(self, **kwargs):
+        self.__dict__.update(kwargs)
+
+    id: uuid.UUID
+    quote_id: uuid.UUID
+    valid_time: int
+    deliver_time: datetime
+    currency_type: str
+    payment_terms: str
+    sub_total: float
+    total: float
+    created_at: datetime
+    modified_on: datetime
 
 
-class Detail(Base):
-    __tablename__ = "details"
-    __table_args__ = QT_TABLE_ARGS
-
-    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    validity_time: Column(DateTime, nullable=False)
-    deliver_time: Column(Integer, nullable=False)
-    currency_type: Column(String, nullable=False)
-    sub_total: Column(Float, nullable=False)
-    total_price: Column(Float, nullable=False)
-    created_at = Column(
-        DateTime, nullable=False, server_default=func.now(), default=func.now()
-    )
-    modified_on = Column(
-        DateTime, nullable=False, server_default=func.now(), default=func.now()
-    )
-
-    quote_id = Column(UUID(as_uuid=True), ForeignKey("qt.quotes.id"))
+mapper_registry.map_imperatively(Detail, details)

@@ -18,17 +18,17 @@ async def create(quote: QuoteCreate, db: Session = Depends(get_db)) -> QuoteResp
     db.add(new_quote)
     db.commit()
     db.refresh(new_quote)
-    print("JVC-", new_quote.__dict__)
+
     # new_quote.__dict__.update(quote.quote.dict())
     # new_quote.exp_date = quote.quote.exp_date
     # new_quote.quote_status = quote.quote.quote_status
     # new_quote.user_id = quote.quote.user_id
     # new_quote.customer_id = uuid4()
 
-    # new_detail = Detail()
-    # new_detail.__dict__.update(quote.detail.dict())
-    # new_detail.quote_id = "3fa85f64-5717-4562-b3fc-2c963f66afa7"
-    # db.add(new_detail)
+    new_detail = Detail()
+    new_detail.__dict__.update(quote.detail.dict())
+    new_detail.quote_id = new_quote.id
+    db.add(new_detail)
 
     # print(new_detail)
     # new_comment = Comment()
