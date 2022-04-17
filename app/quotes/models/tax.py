@@ -12,7 +12,7 @@ taxes = Table(
     "taxes",
     mapper_registry.metadata,
     Column("id", UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
-    Column("quote_id", Integer, ForeignKey("quotes.id")),
+    Column("quote_id", UUID(as_uuid=True), ForeignKey("quotes.id")),
     Column("tax_name", String, nullable=True),
     Column("tax_value", Float, nullable=True),
     Column("created_at", DateTime, nullable=False, server_default=func.now()),

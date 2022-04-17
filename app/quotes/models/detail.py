@@ -11,7 +11,7 @@ details = Table(
     "details",
     mapper_registry.metadata,
     Column("id", UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
-    Column("quote_id", Integer, ForeignKey("quotes.id")),
+    Column("quote_id", UUID(as_uuid=True), ForeignKey("quotes.id")),
     Column("valid_time", Integer, nullable=True),
     Column("deliver_time", DateTime, nullable=True),
     Column("currency_type", String, nullable=True),
