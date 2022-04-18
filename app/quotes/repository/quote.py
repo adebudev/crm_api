@@ -16,8 +16,8 @@ from app.common.database import get_db
 async def create(quote: QuoteCreate, db: Session = Depends(get_db)) -> QuoteResponse:
     new_quote = Quote(**quote.quote.dict())
     db.add(new_quote)
-    db.commit()
-    db.refresh(new_quote)
+    # db.commit()
+    # db.refresh(new_quote)
 
     # new_quote.__dict__.update(quote.quote.dict())
     # new_quote.exp_date = quote.quote.exp_date
@@ -25,10 +25,11 @@ async def create(quote: QuoteCreate, db: Session = Depends(get_db)) -> QuoteResp
     # new_quote.user_id = quote.quote.user_id
     # new_quote.customer_id = uuid4()
 
-    new_detail = Detail()
-    new_detail.__dict__.update(quote.detail.dict())
-    new_detail.quote_id = new_quote.id
-    db.add(new_detail)
+    # new_detail = Detail(**quote.detail.dict())
+    # print(new_detail.__dict__)
+    # # new_detail.quote_id = new_quote.id
+    # db.add(new_detail)
+    # db.commit()
 
     # print(new_detail)
     # new_comment = Comment()
@@ -47,7 +48,6 @@ async def create(quote: QuoteCreate, db: Session = Depends(get_db)) -> QuoteResp
     # for tax in new_taxes:
     #     new_quote.taxes.append(tax)
 
-    # db.commit()
     # db.refresh(new_quote)
     return new_quote
 

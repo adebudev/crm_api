@@ -11,7 +11,7 @@ items = Table(
     "items",
     mapper_registry.metadata,
     Column("id", UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
-    Column("quote_id", UUID(as_uuid=True), ForeignKey("quotes.id")),
+    Column("quote_id", UUID(as_uuid=True), ForeignKey("qt.quotes.id")),
     Column("item_name", String, nullable=True),
     Column("description", String, nullable=True),
     Column("quantity", Integer, nullable=True),

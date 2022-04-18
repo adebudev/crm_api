@@ -1,9 +1,13 @@
+from dataclasses import field
+from typing import List
 import uuid
 from datetime import datetime
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy import *
-from sqlalchemy.orm import registry
+from sqlalchemy.orm import registry, relationship
 from dataclasses import dataclass
+
+from app.quotes.models.detail import Detail
 
 mapper_registry = registry()
 
@@ -48,6 +52,11 @@ class Quote:
     exp_date: datetime
     created_at: datetime
     modified_on: datetime
+    details: List[Detail] = field(default_factory=list)
 
 
-mapper_registry.map_imperatively(Quote, quotes)
+mapper_registry.map_imperatively(
+    Quote,
+    quotes,
+    properties={"details": relationship(Detail, backref="quotes")},
+)
