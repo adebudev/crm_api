@@ -16,8 +16,8 @@ from app.common.database import get_db
 async def create(quote: QuoteCreate, db: Session = Depends(get_db)) -> QuoteResponse:
     new_quote = Quote(**quote.quote.dict())
     db.add(new_quote)
-    # db.commit()
-    # db.refresh(new_quote)
+    db.commit()
+    db.refresh(new_quote)
 
     # new_quote.__dict__.update(quote.quote.dict())
     # new_quote.exp_date = quote.quote.exp_date

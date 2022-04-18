@@ -52,11 +52,10 @@ class Quote:
     exp_date: datetime
     created_at: datetime
     modified_on: datetime
-    details: List[Detail] = field(default_factory=list)
+    # details: List[Detail] = field(default_factory=list)
 
 
 mapper_registry.map_imperatively(
     Quote,
     quotes,
-    properties={"details": relationship(Detail, backref="quotes")},
 )
