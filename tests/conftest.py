@@ -8,6 +8,9 @@ from sqlalchemy.orm import sessionmaker
 from app.common.database import Base
 from sqlalchemy import event
 from sqlalchemy import DDL
+from app.common.models import *
+from app.quotes.models import *
+
 
 SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.postgres_test_user}:{settings.postgres_test_password}@{settings.database_test_hostname}:{settings.postgres_test_port}/{settings.postgres_test_db}"
 
@@ -18,6 +21,7 @@ TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 @pytest.fixture
 def session():
     event.listen(Base.metadata, "before_create", DDL("CREATE SCHEMA IF NOT EXISTS md;"))
+    event.listen(Base.metadata, "before_create", DDL("CREATE SCHEMA IF NOT EXISTS qt;"))
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     db = TestSessionLocal()

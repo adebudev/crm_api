@@ -1,14 +1,13 @@
-# from app.common.database import Base
 from sqlalchemy.ext.declarative import declarative_base
 from app.common.models import MD_TABLE_ARGS
 from sqlalchemy import Column, String, func, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 from passlib.context import CryptContext
+from app.common.database import Base
+from sqlalchemy.orm import relationship
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-Base = declarative_base()
 
 
 class User(Base):
@@ -24,6 +23,8 @@ class User(Base):
     modified_on = Column(
         DateTime, nullable=False, server_default=func.now(), default=func.now()
     )
+
+    clients = relationship("Client")
 
     @property
     def password(self) -> str:
