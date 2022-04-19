@@ -1,14 +1,12 @@
-# from app.common.database import Base
 from sqlalchemy.ext.declarative import declarative_base
 from app.common.models import MD_TABLE_ARGS
 from sqlalchemy import Column, String, func, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 from passlib.context import CryptContext
+from app.common.database import Base
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
-
-Base = declarative_base()
 
 
 class User(Base):
