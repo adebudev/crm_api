@@ -5,6 +5,7 @@ from sqlalchemy.dialects.postgresql import UUID
 import uuid
 from passlib.context import CryptContext
 from app.common.database import Base
+from sqlalchemy.orm import relationship
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -22,6 +23,8 @@ class User(Base):
     modified_on = Column(
         DateTime, nullable=False, server_default=func.now(), default=func.now()
     )
+
+    clients = relationship("Client")
 
     @property
     def password(self) -> str:
