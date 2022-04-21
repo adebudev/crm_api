@@ -10,6 +10,13 @@ from app.quotes.schemas.item_dto import ItemCreate
 from app.quotes.schemas.tax_dto import TaxCreate
 
 
+class QuoteCreate(BaseModel):
+    quote_num: int
+    exp_date: datetime
+    quote_status: bool
+    user_id: UUID
+    client_id: UUID
+
 class QuoteBase(BaseModel):
     quote_num: int
     exp_date: datetime
@@ -18,12 +25,12 @@ class QuoteBase(BaseModel):
     customer_id: UUID
 
 
-class QuoteCreate(BaseModel):
+""" class QuoteCreate(BaseModel):
     quote: QuoteBase
     detail: DetailCreate
     items: List[ItemCreate]
     taxes: List[TaxCreate]
-    comment: CommentCreate
+    comment: CommentCreate """
 
 
 class QuoteResponse(BaseModel):
@@ -31,7 +38,7 @@ class QuoteResponse(BaseModel):
     quote_num: int
     user_id: UUID
     created_at: datetime
-    customer_id: UUID
+    client_id: UUID
     exp_date: datetime
     quote_status: bool
 
