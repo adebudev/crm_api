@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.fixture
-def test_user(test_app):
+def test_user_auth(test_app):
     user_data = {"email": "jhondoe@gmail.com", "password": "test"}
     res = test_app.post("/users/", json=user_data)
     assert res.status_code == 201

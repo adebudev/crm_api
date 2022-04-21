@@ -5,7 +5,7 @@ from sqlalchemy import (
     Column,
     String,
     Integer,
-    Float,
+    Numeric,
     ForeignKey
 )
 from sqlalchemy.dialects.postgresql import UUID
@@ -19,10 +19,10 @@ class Item(Base):
 
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    item_name = Column(String, nullable=True)
+    name = Column(String, nullable=True)
     description = Column(String, nullable=True)
     quantity = Column(Integer, nullable=True)
-    unit_value = Column(Float, nullable=True)
+    unit_value = Column(Numeric(precision=14, scale=2), nullable=True)
     created_at = Column(TIMESTAMP(timezone=False), nullable=False, server_default=text('now()'))
     modified_on = Column(TIMESTAMP(timezone=False), nullable=False, server_default=text('now()'))
 

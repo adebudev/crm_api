@@ -21,7 +21,7 @@ class Detail(Base):
     valid_time = Column(Integer, nullable=True)
     deliver_time = Column(TIMESTAMP(timezone=False), nullable=True)
     # TODO: change to enum
-    currenty_type = Column(String, nullable=True)
+    currency_type = Column(String, nullable=True)
     payment_terms = Column(String, nullable=True)
     sub_total = Column(Numeric(precision=14, scale=2), nullable=True)
     total = Column(Numeric(precision=14, scale=2), nullable=True)
