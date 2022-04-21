@@ -1,40 +1,32 @@
 import uuid
-from datetime import datetime
-from sqlalchemy.dialects.postgresql import UUID
-from sqlalchemy import *
-from sqlalchemy.orm import registry
-from dataclasses import dataclass
-
-mapper_registry = registry()
-
-items = Table(
-    "items",
-    mapper_registry.metadata,
-    Column("id", UUID(as_uuid=True), primary_key=True, default=uuid.uuid4),
-    Column("quote_id", UUID(as_uuid=True), ForeignKey("qt.quotes.id")),
-    Column("item_name", String, nullable=True),
-    Column("description", String, nullable=True),
-    Column("quantity", Integer, nullable=True),
-    Column("unit_value", Float, nullable=True),
-    Column("created_at", DateTime, nullable=False, server_default=func.now()),
-    Column("modified_on", DateTime, nullable=False, server_default=func.now()),
-    schema="qt",
+from app.common.database import Base
+from app.quotes.models import QT_TABLE_ARGS, QT_SCHEMA
+from sqlalchemy import (
+    Column,
+    String,
+    Integer,
+    Float,
+    ForeignKey
 )
+from sqlalchemy.dialects.postgresql import UUID
+from sqlalchemy.sql.sqltypes import TIMESTAMP
+from sqlalchemy.sql.expression import text
 
 
-@dataclass
-class Item:
-    def __init__(self, **kwargs):
-        self.__dict__.update(kwargs)
-
-    id: uuid.UUID
-    quote_id: uuid.UUID
-    item_name: str
-    description: str
-    quantity: int
-    unit_value: float
-    created_at: datetime
-    modified_on: datetime
+class Item(Base):
+    __tablename__ = "items"
+    __table_args__ = (QT_TABLE_ARGS,)
 
 
-mapper_registry.map_imperatively(Item, items)
+    id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
+    item_name = Column(String, nullable=True)
+    description = Column(String, nullable=True)
+    quantity = Column(Integer, nullable=True)
+    unit_value = Column(Float, nullable=True)
+    created_at = Column(TIMESTAMP(timezone=False), nullable=False, server_default=text('now()'))
+    modified_on = Column(TIMESTAMP(timezone=False), nullable=False, server_default=text('now()'))
+
+
+    # Foreign keys
+    quote_id = Column(UUID(as_uuid=True), ForeignKey(QT_SCHEMA + "quotes.id", ondelete="CASCADE"))
+

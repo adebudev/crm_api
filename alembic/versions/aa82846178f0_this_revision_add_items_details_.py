@@ -49,8 +49,8 @@ def upgrade():
         sa.Column("deliver_time", sa.DateTime(), nullable=True),
         sa.Column("currency_type", sa.String(), nullable=True),
         sa.Column("payment_terms", sa.String(), nullable=True),
-        sa.Column("sub_total", sa.Float(), nullable=True),
-        sa.Column("total", sa.Float(), nullable=True),
+        sa.Column("sub_total", sa.Numeric(precision=14, scale=2), nullable=True),
+        sa.Column("total", sa.Numeric(precision=14, scale=2), nullable=True),
         sa.Column(
             "created_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False
         ),
@@ -93,7 +93,7 @@ def upgrade():
         sa.Column("id", postgresql.UUID(as_uuid=True), nullable=False),
         sa.Column("quote_id", postgresql.UUID(as_uuid=True), nullable=True),
         sa.Column("tax_name", sa.String(), nullable=True),
-        sa.Column("tax_value", sa.Float(), nullable=True),
+        sa.Column("tax_value", sa.Numeric(precision=14, scale=2), nullable=True),
         sa.Column(
             "created_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False
         ),
