@@ -1,21 +1,17 @@
 from uuid import UUID
 from datetime import datetime
 from pydantic import BaseModel
+from typing import Optional
 
 
 class DetailBase(BaseModel):
     valid_time: int
     deliver_time: datetime
-    currency_type: str
+    currency_type: Optional[str]
     payment_terms: str
-    created_at: datetime
-    modified_on: datetime
     sub_total: float
     total: float
 
-
-class DetailCreate(DetailBase):
-    quote_id: UUID
 
 
 class DetailResponse(DetailBase):

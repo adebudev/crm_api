@@ -9,7 +9,7 @@ from app.quotes.models.tax import Tax
 from app.quotes.models.item import Item
 from app.quotes.models.quote import Quote
 
-from app.quotes.schemas.quote_dto import QuoteBase, QuoteCreate, QuoteResponse
+from app.quotes.schemas.quote_dto import QuoteCreate, QuoteResponse
 from app.common.database import get_db
 
 
@@ -19,36 +19,36 @@ async def create(quote: QuoteCreate, db: Session = Depends(get_db)) -> QuoteResp
     db.commit()
     db.refresh(new_quote)
 
-    # new_quote.__dict__.update(quote.quote.dict())
-    # new_quote.exp_date = quote.quote.exp_date
-    # new_quote.quote_status = quote.quote.quote_status
-    # new_quote.user_id = quote.quote.user_id
-    # new_quote.customer_id = uuid4()
+    if quote.detail:
+        new_detail = Detail(**quote.detail.dict())
+        new_detail.quote_id = new_quote.id
+        db.add(new_detail)
+        db.commit()
+        db.refresh(new_detail)
 
-    # new_detail = Detail(**quote.detail.dict())
-    # print(new_detail.__dict__)
-    # # new_detail.quote_id = new_quote.id
-    # db.add(new_detail)
-    # db.commit()
+    if quote.item:
+        for item in quote.item:
+            new_item = Item(**item.dict())
+            new_item.quote_id = new_quote.id
+            db.add(new_item)
+            db.commit()
+            db.refresh(new_item)
 
-    # print(new_detail)
-    # new_comment = Comment()
-    # new_comment.__dict__.update(quote.comment.dict())
+    if quote.taxes:
+        for tax in quote.taxes:
+            new_tax = Tax(**tax.dict())
+            new_tax.quote_id = new_quote.id
+            db.add(new_tax)
+            db.commit()
+            db.refresh(new_tax)
 
-    # new_taxes = [Tax(**tax.dict()) for tax in quote.taxes.taxes]
-    # new_items = [Item(**item.dict()) for item in quote.items]
-    # print(new_items, new_taxes, new_comment, new_detail, new_quote)
+    if quote.comment:
+        new_comment = Comment(**quote.comment.dict())
+        new_comment.quote_id = new_quote.id
+        db.add(new_comment)
+        db.commit()
+        db.refresh(new_comment)
 
-    # db.add_all([new_quote, new_detail, new_comment] + new_taxes + new_items)
-
-    # # new_quote.details = new_detail
-    # new_quote.comments = new_comment
-    # for item in new_items:
-    #     new_quote.items.append(item)
-    # for tax in new_taxes:
-    #     new_quote.taxes.append(tax)
-
-    # db.refresh(new_quote)
     return new_quote
 
 

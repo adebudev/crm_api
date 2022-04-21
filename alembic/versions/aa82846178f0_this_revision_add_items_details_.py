@@ -20,11 +20,10 @@ def upgrade():
     op.create_table(
         "items",
         sa.Column("id", postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column("quote_id", postgresql.UUID(as_uuid=True), nullable=True),
-        sa.Column("item_name", sa.String(), nullable=True),
+        sa.Column("name", sa.String(), nullable=True),
         sa.Column("description", sa.String(), nullable=True),
         sa.Column("quantity", sa.Integer(), nullable=True),
-        sa.Column("unit_value", sa.Float(), nullable=True),
+        sa.Column("unit_value", sa.Numeric(precision=14, scale=2), nullable=True),
         sa.Column(
             "created_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False
         ),
@@ -34,17 +33,19 @@ def upgrade():
             server_default=sa.text("now()"),
             nullable=False,
         ),
+        sa.Column("quote_id", postgresql.UUID(as_uuid=True), nullable=True),
         sa.PrimaryKeyConstraint("id"),
         sa.ForeignKeyConstraint(
             ["quote_id"],
             ["qt.quotes.id"],
+            ondelete='CASCADE'
         ),
         schema="qt",
     )
+
     op.create_table(
         "details",
         sa.Column("id", postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column("quote_id", postgresql.UUID(as_uuid=True), nullable=True),
         sa.Column("valid_time", sa.Integer(), nullable=True),
         sa.Column("deliver_time", sa.DateTime(), nullable=True),
         sa.Column("currency_type", sa.String(), nullable=True),
@@ -60,17 +61,19 @@ def upgrade():
             server_default=sa.text("now()"),
             nullable=False,
         ),
+        sa.Column("quote_id", postgresql.UUID(as_uuid=True), nullable=True),
         sa.PrimaryKeyConstraint("id"),
         sa.ForeignKeyConstraint(
             ["quote_id"],
             ["qt.quotes.id"],
+            ondelete='CASCADE'
         ),
         schema="qt",
     )
+
     op.create_table(
         "comments",
         sa.Column("id", postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column("quote_id", postgresql.UUID(as_uuid=True), nullable=True),
         sa.Column("comment", sa.String(), nullable=True),
         sa.Column(
             "created_at", sa.DateTime(), server_default=sa.text("now()"), nullable=False
@@ -81,17 +84,19 @@ def upgrade():
             server_default=sa.text("now()"),
             nullable=False,
         ),
+        sa.Column("quote_id", postgresql.UUID(as_uuid=True), nullable=True),
         sa.PrimaryKeyConstraint("id"),
         sa.ForeignKeyConstraint(
             ["quote_id"],
             ["qt.quotes.id"],
+            ondelete='CASCADE'
         ),
         schema="qt",
     )
+
     op.create_table(
         "taxes",
         sa.Column("id", postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column("quote_id", postgresql.UUID(as_uuid=True), nullable=True),
         sa.Column("tax_name", sa.String(), nullable=True),
         sa.Column("tax_value", sa.Numeric(precision=14, scale=2), nullable=True),
         sa.Column(
@@ -103,10 +108,12 @@ def upgrade():
             server_default=sa.text("now()"),
             nullable=False,
         ),
+        sa.Column("quote_id", postgresql.UUID(as_uuid=True), nullable=True),
         sa.PrimaryKeyConstraint("id"),
         sa.ForeignKeyConstraint(
             ["quote_id"],
             ["qt.quotes.id"],
+            ondelete='CASCADE'
         ),
         schema="qt",
     )

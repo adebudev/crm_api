@@ -9,8 +9,9 @@ from sqlalchemy import (
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 from sqlalchemy.sql.expression import text
+from sqlalchemy.orm import relationship
 
-# Test this approach
+
 class Quote(Base):
     __tablename__ = "quotes"
     __table_args__ = (QT_TABLE_ARGS,)
@@ -23,3 +24,8 @@ class Quote(Base):
     exp_date = Column(TIMESTAMP(timezone=False), nullable=True)
     created_at = Column(TIMESTAMP(timezone=False), nullable=False, server_default=text('now()'))
     modified_on = Column(TIMESTAMP(timezone=False), nullable=False, server_default=text('now()'))
+
+    details = relationship("Detail")
+    items = relationship("Item")
+    taxes = relationship("Tax")
+    comments = relationship("Comment")
