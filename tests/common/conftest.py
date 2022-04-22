@@ -2,7 +2,7 @@ import pytest
 
 
 @pytest.fixture
-def test_client(test_app, test_user):
+def test_client_common(test_app, test_user):
     client_data = {
         "name": "client_1",
         "address": "calle 10",

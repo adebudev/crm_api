@@ -8,7 +8,8 @@ from jose import jwt
 
 def test_log_in(test_app, test_user_auth):
     res = test_app.post(
-        "/login", json={"email": test_user_auth["email"], "password": test_user_auth["password"]}
+        "/login",
+        json={"email": test_user_auth["email"], "password": test_user_auth["password"]},
     )
 
     login_res = Token(**res.json())

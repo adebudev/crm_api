@@ -1,5 +1,8 @@
 from app.common.schemas.client import ClientResponse
 
+# TODO: protect routes
+
+
 def test_client_endpoint(test_app, test_user):
     client_data = {
         "name": "client_1",
@@ -7,7 +10,7 @@ def test_client_endpoint(test_app, test_user):
         "city": "Barranquilla",
         "country": "Colombia",
         "goverment_id": "1234567",
-        "user_id": test_user["id"]
+        "user_id": test_user["id"],
     }
     res = test_app.post("/client/", json=client_data)
 
