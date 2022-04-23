@@ -17,10 +17,18 @@ services:
             - 'environments/development.env'
 
     database:
-        image: postgres
+        image: postgres:13-alpine
         ports:
             - "5432:5432"
         volumes:
             - postgres-db:/var/lib/postgresql/data
         env_file:
             - 'environments/development.env'
+    pgadmin:
+        container_name: pgadmin4_container
+        image: dpage/pgadmin4
+        environment:
+            PGADMIN_DEFAULT_EMAIL: admin@admin.com
+            PGADMIN_DEFAULT_PASSWORD: root
+        ports:
+            - "5050:80"
