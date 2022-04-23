@@ -20,6 +20,7 @@ from typing import List
 
 
 async def create(quote: QuoteCreate, db: Session = Depends(get_db)) -> QuoteResponse:
+    # TODO: quote_num -> user_id
     new_quote = Quote(**quote.quote.dict())
     db.add(new_quote)
     db.commit()

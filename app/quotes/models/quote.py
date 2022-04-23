@@ -13,7 +13,7 @@ class Quote(Base):
     __table_args__ = (QT_TABLE_ARGS,)
 
     id = Column(UUID(as_uuid=True), primary_key=True, default=uuid.uuid4)
-    quote_num = Column(Integer, nullable=False, unique=True)
+    quote_num = Column(Integer, nullable=False)
     user_id = Column(UUID(as_uuid=True), nullable=True)
     client_id = Column(UUID(as_uuid=True), nullable=True)
     quote_status = Column(Boolean, nullable=False, default=True)
