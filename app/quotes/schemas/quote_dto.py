@@ -53,3 +53,13 @@ class QuoteResponses(QuoteResponse):
 
     class Config:
         orm_mode = True
+
+
+class QuoteUpdate(BaseModel):
+    id: UUID
+    quote_num: Optional[int]
+    # TODO: extract from token
+    user_id: UUID
+    client_id: UUID
+    exp_date: Optional[datetime]
+    quote_status: Optional[bool]

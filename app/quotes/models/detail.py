@@ -1,13 +1,7 @@
 import uuid
 from app.common.database import Base
 from app.quotes.models import QT_TABLE_ARGS, QT_SCHEMA
-from sqlalchemy import (
-    Column,
-    String,
-    Integer,
-    Numeric,
-    ForeignKey
-)
+from sqlalchemy import Column, String, Integer, Numeric, ForeignKey
 from sqlalchemy.dialects.postgresql import UUID
 from sqlalchemy.sql.sqltypes import TIMESTAMP
 from sqlalchemy.sql.expression import text
@@ -25,8 +19,14 @@ class Detail(Base):
     payment_terms = Column(String, nullable=True)
     sub_total = Column(Numeric(precision=14, scale=2), nullable=True)
     total = Column(Numeric(precision=14, scale=2), nullable=True)
-    created_at = Column(TIMESTAMP(timezone=False), nullable=False, server_default=text('now()'))
-    modified_on = Column(TIMESTAMP(timezone=False), nullable=False, server_default=text('now()'))
+    created_at = Column(
+        TIMESTAMP(timezone=False), nullable=False, server_default=text("now()")
+    )
+    modified_on = Column(
+        TIMESTAMP(timezone=False), nullable=False, server_default=text("now()")
+    )
 
     # Foreign key
-    quote_id = Column(UUID(as_uuid=True), ForeignKey(QT_SCHEMA + "quotes.id", ondelete="CASCADE"))
+    quote_id = Column(
+        UUID(as_uuid=True), ForeignKey(QT_SCHEMA + "quotes.id", ondelete="CASCADE")
+    )

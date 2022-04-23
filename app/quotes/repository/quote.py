@@ -1,16 +1,22 @@
-from uuid import UUID, uuid4
-from fastapi import Depends, status, HTTPException
-from fastapi.responses import JSONResponse
-from sqlalchemy.orm import Session
+import datetime
+from uuid import UUID
 
+from app.common.database import get_db
 from app.quotes.models.comment import Comment
 from app.quotes.models.detail import Detail
-from app.quotes.models.tax import Tax
 from app.quotes.models.item import Item
 from app.quotes.models.quote import Quote
-
-from app.quotes.schemas.quote_dto import QuoteCreate, QuoteResponse
-from app.common.database import get_db
+from app.quotes.models.tax import Tax
+from app.quotes.schemas.quote_dto import (
+    QuoteCreate,
+    QuoteResponse,
+    QuoteResponses,
+    QuoteUpdate,
+)
+from fastapi import Depends, HTTPException, status
+from fastapi.responses import JSONResponse
+from sqlalchemy.orm import Session
+from typing import List
 
 
 async def create(quote: QuoteCreate, db: Session = Depends(get_db)) -> QuoteResponse:
@@ -52,39 +58,42 @@ async def create(quote: QuoteCreate, db: Session = Depends(get_db)) -> QuoteResp
     return new_quote
 
 
-async def get_all(db: Session = Depends(get_db)):
+async def get_all(db: Session = Depends(get_db)) -> List[QuoteResponses]:
     return db.query(Quote).all()
 
 
-async def update(update: QuoteCreate, id: UUID, db: Session = Depends(get_db)):
-    quote = db.query(Quote).filter(Quote.id == id).one_or_none()
+async def update(update_post: QuoteUpdate, id: UUID, db: Session = Depends(get_db)):
+    quote_query = db.query(Quote).filter(Quote.id == id)
+    quote = quote_query.first()
     if not quote:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="Quote with id: {} does not exist".format(id),
         )
 
-    for var, value in vars(quote).items():
-        setattr(quote, var, value) if value else None
+    if update_post.client_id != quote.client_id or update_post.user_id != quote.user_id:
+        raise HTTPException(
+            status_code=status.HTTP_403_FORBIDDEN,
+            detail="Not authorized to perform requested action",
+        )
 
-    quote.quote_num = update.quote_num
-    db.add(quote)
+    quote_query.update(update_post.dict(), synchronize_session=False)
+    quote.modified_on = datetime.datetime.now()
     db.commit()
-    db.refresh(quote)
-    return quote
+    return quote_query.first()
 
 
 async def delete(id: UUID, db: Session = Depends(get_db)):
-    quote = db.query(Quote).filter(Quote.id == id).one_or_none()
+    quote_query = db.query(Quote).filter(Quote.id == id)
+    quote = quote_query.first()
     if not quote:
         raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
+            status_code=status.HTTP_404_NOT_FOUND,
             detail="Quote with id: {} does not exist".format(id),
         )
 
-    db.delete(quote)
+    quote_query.delete(synchronize_session=False)
     db.commit()
-    db.close()
     return JSONResponse(
         content={
             "status_code": status.HTTP_200_OK,
