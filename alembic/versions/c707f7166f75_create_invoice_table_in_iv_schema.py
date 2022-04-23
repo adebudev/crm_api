@@ -1,8 +1,8 @@
-"""This revision adds a quote table to qt schema
+"""create invoice table in iv schema
 
-Revision ID: 6c4a073a3403
-Revises: f4b4e7bba301
-Create Date: 2022-04-16 19:05:31.595383
+Revision ID: c707f7166f75
+Revises: 9ec64b014395
+Create Date: 2022-04-23 17:33:44.311338
 
 """
 from alembic import op
@@ -11,27 +11,26 @@ from sqlalchemy.dialects import postgresql
 
 
 # revision identifiers, used by Alembic.
-revision = '6c4a073a3403'
-down_revision = 'f4b4e7bba301'
+revision = 'c707f7166f75'
+down_revision = '9ec64b014395'
 branch_labels = None
 depends_on = None
 
 
 def upgrade():
-    op.create_table(
-        'quotes',
+    op.create_table('invoices',
         sa.Column('id', postgresql.UUID(as_uuid=True), nullable=False),
-        sa.Column('quote_num', sa.Integer(), nullable=False),
+        sa.Column('invoice_num', sa.Integer(), nullable=False),
         sa.Column('user_id', postgresql.UUID(as_uuid=True), nullable=True),
         sa.Column('client_id', postgresql.UUID(as_uuid=True), nullable=True),
-        sa.Column("quote_status", sa.Boolean(), nullable=False, default=True),
-        sa.Column("exp_date", sa.DateTime(), nullable=True),
+        sa.Column('detail', sa.String, nullable=False),
+        sa.Column('total', sa.Numeric(precision=14, scale=2), nullable=True),
         sa.Column('created_at', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
         sa.Column('modified_on', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
         sa.PrimaryKeyConstraint('id'),
-        schema='qt'
+        schema='iv'
     )
 
 
 def downgrade():
-    op.drop_table('quotes', schema='qt')
+    op.drop_table('invoices', schema='iv')
