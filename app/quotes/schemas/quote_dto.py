@@ -2,7 +2,7 @@ from uuid import UUID
 
 from typing import List, Optional
 from datetime import datetime
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 from app.quotes.schemas.comment_dto import CommentBase, CommentResponse
 
 from app.quotes.schemas.detail_dto import DetailBase, DetailResponse
@@ -11,12 +11,12 @@ from app.quotes.schemas.tax_dto import TaxBase, TaxResponse
 
 
 class QuoteBase(BaseModel):
-    quote_num: int
-    exp_date: datetime
-    quote_status: Optional[bool]
+    quote_num: int = Field(..., alias="quoteNumber")
+    exp_date: datetime = Field(..., alias="expirationDate")
+    quote_status: Optional[bool] = Field(None, alias="quoteStatus")
     # TODO: extract from token
-    user_id: UUID
-    client_id: UUID
+    user_id: UUID = Field(..., alias="userId")
+    client_id: UUID = Field(..., alias="clientId")
 
 
 class QuoteCreate(BaseModel):
@@ -27,17 +27,14 @@ class QuoteCreate(BaseModel):
     comment: Optional[CommentBase]
 
 
-class QuoteResponse(BaseModel):
+class QuoteResponse(QuoteBase):
     id: UUID
-    quote_num: int
-    user_id: UUID
-    created_at: datetime
-    client_id: UUID
-    exp_date: datetime
-    quote_status: bool
+    created_at: datetime = Field(..., alias="createdAt")
+    modified_on: datetime = Field(..., alias="modifiedOn")
 
     class Config:
         orm_mode = True
+        allow_population_by_field_name = True
 
 
 class HttpResponse(BaseModel):
@@ -50,9 +47,6 @@ class QuoteResponses(QuoteResponse):
     items: Optional[List[ItemResponse]]
     taxes: Optional[List[TaxResponse]]
     comments: Optional[List[CommentResponse]]
-
-    class Config:
-        orm_mode = True
 
 
 class QuoteUpdate(BaseModel):
