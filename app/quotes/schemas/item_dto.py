@@ -1,18 +1,18 @@
 from uuid import UUID
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 
 
 class ItemBase(BaseModel):
-    name: str
-    description: str
-    quantity: int
-    unit_value: float
-
+    name: str = Field(..., alias="name")
+    description: str = Field(..., alias="description")
+    quantity: int = Field(..., alias="quantity")
+    unit_value: float = Field(..., alias="unitValue")
 
 
 class ItemResponse(ItemBase):
-    id: UUID
-    quote_id: UUID
+    id: UUID = Field(..., alias="id")
+    quote_id: UUID = Field(..., alias="quoteId")
 
     class Config:
         orm_mode = True
+        allow_population_by_field_name = True
