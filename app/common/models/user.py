@@ -1,9 +1,11 @@
-from app.common.database import Base
+from sqlalchemy.ext.declarative import declarative_base
 from app.common.models import MD_TABLE_ARGS
 from sqlalchemy import Column, String, func, DateTime
 from sqlalchemy.dialects.postgresql import UUID
 import uuid
 from passlib.context import CryptContext
+from app.common.database import Base
+from sqlalchemy.orm import relationship
 
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
 
@@ -22,6 +24,8 @@ class User(Base):
         DateTime, nullable=False, server_default=func.now(), default=func.now()
     )
 
+    clients = relationship("Client")
+
     @property
     def password(self) -> str:
         """Password Getter"""
@@ -32,11 +36,11 @@ class User(Base):
         """Password Setter"""
         self._password = pwd_context.hash(password)
 
-    def verify_password(self, plain_password: str, hashed_password: str) -> bool:
+    def verify_password(self, plain_password: str) -> bool:
         """
         Accept a password and hash the value while comparing the hashed
         value to the password hash contained in the database.
         """
         if self.password is None:
             return False
-        return pwd_context.verify(plain_password, hashed_password)
+        return pwd_context.verify(plain_password, self._password)

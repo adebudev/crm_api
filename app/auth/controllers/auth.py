@@ -1,0 +1,48 @@
+import json
+
+from app.auth.schemas.user import UserLogIn
+from app.auth.services import oauth2
+from app.auth.services.oauth2 import get_current_user
+from app.common.database import get_db
+from app.common.models.user import User
+from fastapi import APIRouter, Depends, HTTPException, status
+from sqlalchemy.orm import Session
+from app.auth.schemas.token import Token
+
+router = APIRouter(tags=["Authentication"])
+
+
+@router.post("/login", response_model=Token)
+def login(
+    user_credentials: UserLogIn,
+    db: Session = Depends(get_db),
+):
+    user = db.query(User).filter(User.email == user_credentials.email).first()
+    if not user:
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    if not user.verify_password(user_credentials.password):
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Incorrect email or password",
+            headers={"WWW-Authenticate": "Bearer"},
+        )
+
+    # Create token
+    access_token = oauth2.create_access_token(
+        data={"user_id": json.dumps(str(user.id))}
+    )
+    # return token
+    return {"access_token": access_token, "token_type": "Bearer"}
+
+
+# This endpoint will be deleted, just for testing purposes
+@router.get("/login/test")
+def login_test(current_user: User = Depends(get_current_user)):
+    # User needs to be authenticated
+    print(current_user)
+    return {"detail": "User authorized"}
