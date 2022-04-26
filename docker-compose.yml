@@ -2,6 +2,7 @@ version: "3"
 
 volumes:
     postgres-db:
+    postgres-test:
 
 services:
     api:
@@ -12,15 +13,28 @@ services:
         ports:
             - 8000:8000
         volumes:
-            - ./:/usr/src/app:ro
+            - ./:/usr/src/app
         env_file:
             - 'environments/development.env'
 
     database:
         image: postgres
+        restart: always
         ports:
             - "5432:5432"
         volumes:
             - postgres-db:/var/lib/postgresql/data
         env_file:
             - 'environments/development.env'
+
+    testdb:
+        image: postgres
+        environment:
+            - POSTGRES_DB=test-db
+            - POSTGRES_USER=test
+            - POSTGRES_PASSWORD=test
+        restart: always
+        ports:
+            - "5433:5432"
+        volumes:
+            - postgres-test:/var/lib/postgresql/data
