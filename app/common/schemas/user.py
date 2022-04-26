@@ -1,16 +1,17 @@
+from typing import Optional
 from uuid import UUID
 from pydantic import BaseModel, EmailStr
 from datetime import datetime
 
 class UserBase(BaseModel):
     first_name: str
-    second_name: str
+    second_name: Optional[str]
     last_name: str
     email: EmailStr
     phone: str
     address: str
-    country: str
-    city: str
+    country: Optional[str]
+    city: Optional[str]
 
 class UserCreate(UserBase):
     password: str
