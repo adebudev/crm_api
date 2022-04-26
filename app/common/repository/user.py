@@ -5,7 +5,7 @@ from fastapi_mail import FastMail, MessageSchema
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
 from app.common.database import get_db
-from app.common.schemas.user import UserBase, UserCreate, UserResponse, UserResponseEmail, UserUpdatePassword
+from app.common.schemas.user import UserCreate, UserEmail, UserResponse, UserResponseEmail, UserUpdatePassword
 from app.common.models.user import User
 from fastapi.responses import JSONResponse
 from app.config.email_conf import conf
@@ -40,7 +40,7 @@ async def send_email_async(email_to: EmailStr, body: dict):
     await fm.send_message(message, template_name='email.html')
 
 
-async def send_email(user_email: UserBase, db: Session = Depends(get_db)) -> UserResponseEmail:
+async def send_email(user_email: UserEmail, db: Session = Depends(get_db)) -> UserResponseEmail:
     user: User = db.query(User).filter(
         User.email == user_email.email).one_or_none()
     if not user:

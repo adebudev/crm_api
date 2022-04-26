@@ -25,7 +25,9 @@ class UserResponse(UserBase):
     class Config:
         orm_mode = True
 
-class UserResponseEmail(BaseModel):
+class UserEmail(BaseModel):
+    email: EmailStr
+
+class UserResponseEmail(UserEmail):
     status_code: int
     message: str
-    email: EmailStr
