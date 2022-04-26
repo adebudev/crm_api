@@ -33,8 +33,8 @@ async def create(quote: QuoteCreate, db: Session = Depends(get_db)) -> QuoteResp
         db.commit()
         db.refresh(new_detail)
 
-    if quote.item:
-        for item in quote.item:
+    if quote.items:
+        for item in quote.items:
             new_item = Item(**item.dict())
             new_item.quote_id = new_quote.id
             db.add(new_item)
