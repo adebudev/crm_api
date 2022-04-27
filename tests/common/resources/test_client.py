@@ -9,8 +9,8 @@ def test_client_endpoint(test_app, test_user):
         "address": "calle 10",
         "city": "Barranquilla",
         "country": "Colombia",
-        "goverment_id": "1234567",
-        "user_id": test_user["id"],
+        "govermentId": "1234567",
+        "userId": test_user["id"],
     }
     res = test_app.post("/client/", json=client_data)
 
