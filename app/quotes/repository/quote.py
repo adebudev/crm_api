@@ -1,5 +1,9 @@
 import datetime
 from uuid import UUID
+from typing import List
+from fastapi import Depends, HTTPException, status
+from fastapi.responses import JSONResponse
+from sqlalchemy.orm import Session
 
 from app.common.database import get_db
 from app.quotes.models.comment import Comment
@@ -13,13 +17,10 @@ from app.quotes.schemas.quote_dto import (
     QuoteResponses,
     QuoteUpdate,
 )
-from fastapi import Depends, HTTPException, status
-from fastapi.responses import JSONResponse
-from sqlalchemy.orm import Session
-from typing import List
+from app.auth.repository.auth import get_access_user
 
 
-async def create(quote: QuoteCreate, db: Session = Depends(get_db)) -> QuoteResponse:
+async def create(quote: QuoteCreate, access = Depends(get_access_user), db: Session = Depends(get_db)) -> QuoteResponse:
     # TODO: quote_num -> user_id
     new_quote = Quote(**quote.quote.dict())
     db.add(new_quote)
@@ -33,8 +34,8 @@ async def create(quote: QuoteCreate, db: Session = Depends(get_db)) -> QuoteResp
         db.commit()
         db.refresh(new_detail)
 
-    if quote.item:
-        for item in quote.item:
+    if quote.items:
+        for item in quote.items:
             new_item = Item(**item.dict())
             new_item.quote_id = new_quote.id
             db.add(new_item)
@@ -59,11 +60,11 @@ async def create(quote: QuoteCreate, db: Session = Depends(get_db)) -> QuoteResp
     return new_quote
 
 
-async def get_all(db: Session = Depends(get_db)) -> List[QuoteResponses]:
+async def get_all(access = Depends(get_access_user), db: Session = Depends(get_db)) -> List[QuoteResponses]:
     return db.query(Quote).all()
 
 
-async def update(update_post: QuoteUpdate, id: UUID, db: Session = Depends(get_db)):
+async def update(update_post: QuoteUpdate, id: UUID, access = Depends(get_access_user), db: Session = Depends(get_db)):
     quote_query = db.query(Quote).filter(Quote.id == id)
     quote = quote_query.first()
     if not quote:
@@ -84,7 +85,7 @@ async def update(update_post: QuoteUpdate, id: UUID, db: Session = Depends(get_d
     return quote_query.first()
 
 
-async def delete(id: UUID, db: Session = Depends(get_db)):
+async def delete(id: UUID, access = Depends(get_access_user), db: Session = Depends(get_db)):
     quote_query = db.query(Quote).filter(Quote.id == id)
     quote = quote_query.first()
     if not quote:

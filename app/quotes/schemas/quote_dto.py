@@ -22,7 +22,7 @@ class QuoteBase(BaseModel):
 class QuoteCreate(BaseModel):
     quote: QuoteBase
     detail: Optional[DetailBase]
-    item: Optional[List[ItemBase]]
+    items: Optional[List[ItemBase]]
     taxes: Optional[List[TaxBase]]
     comment: Optional[CommentBase]
 
@@ -49,11 +49,9 @@ class QuoteResponses(QuoteResponse):
     comments: Optional[List[CommentResponse]]
 
 
-class QuoteUpdate(BaseModel):
-    id: UUID
-    quote_num: Optional[int]
-    # TODO: extract from token
-    user_id: UUID
-    client_id: UUID
-    exp_date: Optional[datetime]
-    quote_status: Optional[bool]
+class QuoteUpdate(QuoteBase):
+    quote: QuoteBase
+    detail: Optional[DetailBase]
+    items: Optional[List[ItemBase]]
+    taxes: Optional[List[TaxBase]]
+    comments: Optional[CommentBase]

@@ -2,13 +2,14 @@ from uuid import UUID
 from fastapi import Depends, status, HTTPException
 from fastapi.responses import JSONResponse
 from sqlalchemy.orm import Session
+from app.auth.repository.auth import get_access_user
 
 from app.quotes.schemas.item_dto import ItemCreate, ItemResponse
 from app.quotes.models.item import Item
 from app.common.database import get_db
 
 
-async def create(item: ItemCreate, db: Session = Depends(get_db)) -> ItemResponse:
+async def create(item: ItemCreate, access = Depends(get_access_user), db: Session = Depends(get_db)) -> ItemResponse:
     new_item = Item(**item.dict())
     db.add(new_item)
     db.commit()
@@ -17,7 +18,7 @@ async def create(item: ItemCreate, db: Session = Depends(get_db)) -> ItemRespons
     return new_item
 
 
-async def get_all(db: Session = Depends(get_db)):
+async def get_all(db: Session = Depends(get_db), access = Depends(get_access_user)):
     return db.query(Item).all()
 
 
@@ -42,7 +43,7 @@ async def update(update: ItemCreate, id: UUID, db: Session = Depends(get_db)):
     return item
 
 
-async def delete(id: UUID, db: Session = Depends(get_db)):
+async def delete(id: UUID, access = Depends(get_access_user), db: Session = Depends(get_db)):
     item = db.query(Item).filter(Item.id == id).one_or_none()
     if not item:
         raise HTTPException(
