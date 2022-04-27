@@ -9,9 +9,9 @@ class ClientCreate(BaseModel):
     city: str
     country: str
     goverment_id: str = Field(..., alias="govermentId")
-    contact_name: Optional[str] = Field(..., alias="contactName")
-    contact_phone: Optional[str] = Field(..., alias="contactPhone")
-    contact_email: Optional[str] = Field(..., alias="contactEmail")
+    contact_name: Optional[str] = Field(None, alias="contactName")
+    contact_phone: Optional[str] = Field(None, alias="contactPhone")
+    contact_email: Optional[str] = Field(None, alias="contactEmail")
     # TODO: Extract from token (Delete from here)
     user_id: UUID = Field(..., alias="userId")
 
@@ -24,3 +24,4 @@ class ClientResponse(ClientCreate):
 
     class Config:
         orm_mode = True
+        allow_population_by_field_name = True

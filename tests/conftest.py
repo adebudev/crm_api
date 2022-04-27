@@ -61,8 +61,8 @@ def test_client(test_app, test_user):
         "address": "calle 10",
         "city": "Barranquilla",
         "country": "Colombia",
-        "goverment_id": "12345679",
-        "user_id": test_user["id"]
+        "govermentId": "12345679",
+        "userId": test_user["id"]
     }
     res = test_app.post("/client/", json=client_data)
     assert res.status_code == 201
