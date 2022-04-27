@@ -3,6 +3,8 @@ from sqlalchemy.orm import Session
 from app.common.database import get_db
 from app.common.schemas.client import ClientResponse, ClientCreate
 from app.common.models.client import Client
+from typing import List
+from uuid import UUID
 
 router = APIRouter(prefix="/client", tags=["Clients"])
 
@@ -15,3 +17,8 @@ async def create_client(client: ClientCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_client)
     return new_client
+
+
+@router.get("/{user_id}", status_code=status.HTTP_200_OK, response_model=List[ClientResponse])
+async def get_clients(user_id: UUID, db: Session = Depends(get_db)):
+    return db.query(Client).filter(Client.user_id == user_id).all()

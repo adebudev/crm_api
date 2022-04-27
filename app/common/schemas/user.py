@@ -1,6 +1,6 @@
 from typing import Optional
 from uuid import UUID
-from pydantic import BaseModel, EmailStr
+from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 
 class UserBase(BaseModel):
@@ -21,7 +21,7 @@ class UserUpdatePassword(BaseModel):
 
 class UserResponse(UserBase):
     id: UUID
-    created_at: datetime
+    created_at: datetime = Field(..., alias="createdAt")
 
     class Config:
         orm_mode = True
