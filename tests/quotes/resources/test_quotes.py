@@ -22,18 +22,18 @@ def test_get_quotes(quote_base, test_app):
 def test_post_quotes(test_app, test_user, test_client):
     quote_data = {
         "quote": {
-            "quote_num": 100,
-            "exp_date": str(datetime.datetime.now()),
-            "quote_status": True,
-            "user_id": test_user["id"],
-            "client_id": test_client["id"],
+            "quoteNumber": 100,
+            "expirationDate": str(datetime.datetime.now()),
+            "quoteStatus": True,
+            "userId": test_user["id"],
+            "clientId": test_client["id"],
         },
         "detail": {
-            "valid_time": 120,
-            "deliver_time": str(datetime.datetime.now()),
-            "currency_type": "COP",
-            "payment_terms": "Monthly",
-            "sub_total": 13.5,
+            "validTime": 120,
+            "deliverTime": str(datetime.datetime.now()),
+            "currencyType": "COP",
+            "paymentTerms": "Monthly",
+            "subTotal": 13.5,
             "total": 20.5,
         },
         "item": [
@@ -41,16 +41,16 @@ def test_post_quotes(test_app, test_user, test_client):
                 "name": "item test 1",
                 "description": "item test description",
                 "quantity": 10,
-                "unit_value": 16,
+                "unitValue": 16,
             },
             {
                 "name": "item test 2",
                 "description": "item test description 2",
                 "quantity": 11,
-                "unit_value": 15.5,
+                "unitValue": 15.5,
             },
         ],
-        "taxes": [{"tax_name": "iva", "tax_value": 20.3}],
+        "taxes": [{"taxName": "iva", "taxValue": 20.3}],
         "comment": {"comment": "comment test 1"},
     }
     res = test_app.post("/quotes/", json=quote_data)

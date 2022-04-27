@@ -25,6 +25,7 @@ class UserResponse(UserBase):
 
     class Config:
         orm_mode = True
+        allow_population_by_field_name = True
 
 class UserEmail(BaseModel):
     email: EmailStr
