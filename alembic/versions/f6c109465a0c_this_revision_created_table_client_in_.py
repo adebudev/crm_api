@@ -24,7 +24,10 @@ def upgrade():
         sa.Column('name', sa.String(), nullable=False),
         sa.Column('address', sa.String, nullable=False),
         sa.Column("city", sa.String(), nullable=True),
-        sa.Column("country", sa.String, nullable=False),
+        sa.Column("country", sa.String(), nullable=False),
+        sa.Column("contact_name", sa.String(), nullable=True),
+        sa.Column("contact_phone", sa.String(), nullable=True),
+        sa.Column("contact_email", sa.String(), nullable=True),
         sa.Column("is_active", sa.Boolean(), nullable=False, default=True),
         sa.Column('user_id', postgresql.UUID(as_uuid=True), nullable=True),
         sa.Column("goverment_id", sa.String(), nullable=True),
@@ -32,6 +35,7 @@ def upgrade():
         sa.Column('modified_on', sa.DateTime(), server_default=sa.text('now()'), nullable=False),
         sa.PrimaryKeyConstraint('id'),
         sa.UniqueConstraint('goverment_id'),
+        sa.UniqueConstraint('contact_email'),
         sa.ForeignKeyConstraint(['user_id'], ['md.user.id'], name='user_id_fkey', ondelete='CASCADE'),
         schema='md'
     )

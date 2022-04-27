@@ -17,11 +17,12 @@ SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.postgres_test_user}:{settings
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 TestSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-
+# TODO: fix test with new camelcase
 @pytest.fixture
 def session():
     event.listen(Base.metadata, "before_create", DDL("CREATE SCHEMA IF NOT EXISTS md;"))
     event.listen(Base.metadata, "before_create", DDL("CREATE SCHEMA IF NOT EXISTS qt;"))
+    event.listen(Base.metadata, "before_create", DDL("CREATE SCHEMA IF NOT EXISTS iv;"))
     Base.metadata.drop_all(bind=engine)
     Base.metadata.create_all(bind=engine)
     db = TestSessionLocal()
