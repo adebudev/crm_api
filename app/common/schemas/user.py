@@ -15,6 +15,9 @@ class UserBase(BaseModel):
 
 class UserCreate(UserBase):
     password: str
+    
+class UserUpdate(UserBase):
+    pass
 
 class UserUpdatePassword(BaseModel):
     password: str

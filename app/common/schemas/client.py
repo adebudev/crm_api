@@ -25,3 +25,11 @@ class ClientResponse(ClientCreate):
     class Config:
         orm_mode = True
         allow_population_by_field_name = True
+
+class ClientDataResponse(BaseModel):
+    id: UUID
+    name: str
+    contact_name: Optional[str]
+    contact_phone: Optional[str]
+    contact_email: Optional[str]
+    is_active: bool

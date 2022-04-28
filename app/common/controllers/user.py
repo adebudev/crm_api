@@ -1,6 +1,6 @@
 from fastapi import status, Depends, APIRouter
 from app.common.schemas.user import UserResponse, UserResponseEmail
-from app.common.repository.user import create, getById, send_email, update_password
+from app.common.repository.user import create, update, getById, send_email, update_password
 
 router = APIRouter(prefix="/users", tags=["Users"])
 
@@ -9,8 +9,11 @@ router = APIRouter(prefix="/users", tags=["Users"])
 def create_user(user: UserResponse = Depends(create)):
     return user
 
+@router.put("/", status_code=status.HTTP_200_OK, response_model=UserResponse)
+def update_user(user: UserResponse = Depends(update)):
+    return user
 
-@router.get("/{id}", status_code=status.HTTP_200_OK, response_model=UserResponse)
+@router.get("/", status_code=status.HTTP_200_OK, response_model=UserResponse)
 def get_user(user: UserResponse = Depends(getById)):
     return user
 

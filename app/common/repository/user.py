@@ -4,8 +4,9 @@ from fastapi import status, HTTPException, Depends
 from fastapi_mail import FastMail, MessageSchema
 from pydantic import EmailStr
 from sqlalchemy.orm import Session
+from app.auth.repository.auth import get_access_user
 from app.common.database import get_db
-from app.common.schemas.user import UserCreate, UserEmail, UserResponse, UserResponseEmail, UserUpdatePassword
+from app.common.schemas.user import UserCreate, UserEmail, UserResponse, UserResponseEmail, UserUpdate, UserUpdatePassword
 from app.common.models.user import User
 from fastapi.responses import JSONResponse
 from app.config.email_conf import conf
@@ -18,14 +19,21 @@ def create(user: UserCreate, db: Session = Depends(get_db)) -> UserResponse:
     db.refresh(new_user)
     return new_user
 
-
-def getById(id: UUID, db: Session = Depends(get_db)) -> UserResponse:
-    user = db.query(User).filter(User.id == id).first()
+def update(update_user: UserUpdate, user: User = Depends(get_access_user), db: Session = Depends(get_db)) -> UserResponse:
+    user_query = db.query(User).filter(User.id == user.id)
+    print(user_query.first())
+    user = user_query.first()
     if not user:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
-            detail="User with id: {} does not exist".format(id),
+            detail="User with id: {} does not exist".format(user.id),
         )
+    user_query.update(update_user.dict(), synchronize_session=False)
+    db.refresh(user)
+    return user_query.first()
+
+
+def getById(user: User = Depends(get_access_user), db: Session = Depends(get_db)) -> UserResponse:
     return user
 
 
