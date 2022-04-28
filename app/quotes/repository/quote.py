@@ -18,14 +18,23 @@ from app.quotes.schemas.quote_dto import (
     QuoteUpdate,
 )
 from app.auth.repository.auth import get_access_user
+from app.common.models.user import User
 
 
-async def create(quote: QuoteCreate, access = Depends(get_access_user), db: Session = Depends(get_db)) -> QuoteResponse:
+async def create(
+    quote: QuoteCreate,
+    access: User = Depends(get_access_user),
+    db: Session = Depends(get_db),
+) -> QuoteResponse:
     # check if the user has quote number already
-    present_quote = db.query(Quote).filter(
-        Quote.quote_num == quote.quote.quote_num,
-        Quote.user_id == quote.quote.user_id
-    ).first()
+    present_quote = (
+        db.query(Quote)
+        .filter(
+            Quote.quote_num == quote.quote.quote_num,
+            Quote.user_id == quote.quote.user_id,
+        )
+        .first()
+    )
 
     if present_quote:
         raise HTTPException(
@@ -70,11 +79,18 @@ async def create(quote: QuoteCreate, access = Depends(get_access_user), db: Sess
     return new_quote
 
 
-async def get_all(access = Depends(get_access_user), db: Session = Depends(get_db)) -> List[QuoteResponses]:
+async def get_all(
+    access=Depends(get_access_user), db: Session = Depends(get_db)
+) -> List[QuoteResponses]:
     return db.query(Quote).all()
 
 
-async def update(update_post: QuoteUpdate, id: UUID, access = Depends(get_access_user), db: Session = Depends(get_db)):
+async def update(
+    update_post: QuoteUpdate,
+    id: UUID,
+    access=Depends(get_access_user),
+    db: Session = Depends(get_db),
+):
     quote_query = db.query(Quote).filter(Quote.id == id)
     quote = quote_query.first()
     if not quote:
@@ -95,7 +111,9 @@ async def update(update_post: QuoteUpdate, id: UUID, access = Depends(get_access
     return quote_query.first()
 
 
-async def delete(id: UUID, access = Depends(get_access_user), db: Session = Depends(get_db)):
+async def delete(
+    id: UUID, access=Depends(get_access_user), db: Session = Depends(get_db)
+):
     quote_query = db.query(Quote).filter(Quote.id == id)
     quote = quote_query.first()
     if not quote:
