@@ -46,7 +46,16 @@ def test_app(session):
 
 @pytest.fixture
 def test_user(test_app):
-    user_data = {"email": "jhondoe@gmail.com", "password": "test"}
+    user_data = {
+        "firstName": "jhon",
+        "lastName": "Doe",
+        "email": "jhondoe@gmail.com",
+        "password": "test",
+        "phone": "3008002843",
+        "address": "1800 avenue",
+        "country": "COL",
+        "city": "bar"
+    }
     res = test_app.post("/users/", json=user_data)
     assert res.status_code == 201
     new_user = res.json()

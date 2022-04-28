@@ -64,11 +64,11 @@ def test_post_quotes(test_app, test_user, test_client):
 def test_put_quotes(test_app, test_user, test_client, quote_base):
     data = {
         "id": str(quote_base[1].id),
-        "quote_num": 5,
-        "user_id": test_user["id"],
-        "client_id": test_client["id"],
-        "exp_date": str(datetime.datetime.now()),
-        "quote_status": True,
+        "quoteNumber": 5,
+        "userId": test_user["id"],
+        "clientId": test_client["id"],
+        "expirationDate": str(datetime.datetime.now()),
+        "quoteStatus": True,
     }
     res = test_app.put(f"/quotes/{quote_base[1].id}", json=data)
     updated_quote = QuoteResponse(**res.json())
