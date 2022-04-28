@@ -4,9 +4,9 @@ from pydantic import BaseModel, EmailStr, Field
 from datetime import datetime
 
 class UserBase(BaseModel):
-    first_name: str
-    second_name: Optional[str]
-    last_name: str
+    first_name: str = Field(..., alias="firstName")
+    second_name: Optional[str] = Field(None, alias="secondName")
+    last_name: str = Field(..., alias="lastName")
     email: EmailStr
     phone: str
     address: str

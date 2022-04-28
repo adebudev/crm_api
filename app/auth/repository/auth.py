@@ -16,7 +16,7 @@ ALGORITHM = settings.algorithm
 
 def login_user(user_credentials: Credentials, db: Session = Depends(get_db)) -> str:
     user = db.query(User).filter(
-        User.email == user_credentials.username).one_or_none()
+        User.email == user_credentials.email).one_or_none()
     if not user:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,

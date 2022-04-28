@@ -21,7 +21,18 @@ from app.auth.repository.auth import get_access_user
 
 
 async def create(quote: QuoteCreate, access = Depends(get_access_user), db: Session = Depends(get_db)) -> QuoteResponse:
-    # TODO: quote_num -> user_id
+    # check if the user has quote number already
+    present_quote = db.query(Quote).filter(
+        Quote.quote_num == quote.quote.quote_num,
+        Quote.user_id == quote.quote.user_id
+    ).first()
+
+    if present_quote:
+        raise HTTPException(
+            status_code=status.HTTP_409_CONFLICT,
+            detail="user already has quote number: {}".format(quote.quote.quote_num),
+        )
+
     new_quote = Quote(**quote.quote.dict())
     db.add(new_quote)
     db.commit()
@@ -56,7 +67,6 @@ async def create(quote: QuoteCreate, access = Depends(get_access_user), db: Sess
         db.add(new_comment)
         db.commit()
         db.refresh(new_comment)
-
     return new_quote
 
 
