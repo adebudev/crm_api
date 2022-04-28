@@ -12,7 +12,7 @@ async def create_quote(quote: QuoteResponse = Depends(create)):
     return quote
 
 
-@router.get("/", status_code=status.HTTP_200_OK, response_model=List[QuoteResponses])
+@router.get("/", status_code=status.HTTP_200_OK)
 async def get_quotes(quotes: List[QuoteResponses] = Depends(get_all)):
     return quotes
 

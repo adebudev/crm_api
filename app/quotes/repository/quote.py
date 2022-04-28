@@ -19,11 +19,12 @@ from app.quotes.schemas.quote_dto import (
 )
 from app.auth.repository.auth import get_access_user
 from app.common.models.user import User
+from app.common.models.client import Client
 
 
 async def create(
     quote: QuoteCreate,
-    access: User = Depends(get_access_user),
+    user: User = Depends(get_access_user),
     db: Session = Depends(get_db),
 ) -> QuoteResponse:
     # check if the user has quote number already
@@ -31,7 +32,7 @@ async def create(
         db.query(Quote)
         .filter(
             Quote.quote_num == quote.quote.quote_num,
-            Quote.user_id == quote.quote.user_id,
+            Quote.user_id == user.id,
         )
         .first()
     )
@@ -39,10 +40,11 @@ async def create(
     if present_quote:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
-            detail="user already has quote number: {}".format(quote.quote.quote_num),
+            detail="user already has quote number: {}".format(
+                quote.quote.quote_num),
         )
-
     new_quote = Quote(**quote.quote.dict())
+    new_quote.user_id = user.id
     db.add(new_quote)
     db.commit()
     db.refresh(new_quote)
@@ -79,16 +81,24 @@ async def create(
     return new_quote
 
 
-async def get_all(
-    access=Depends(get_access_user), db: Session = Depends(get_db)
+def get_all(
+    user: User = Depends(get_access_user), db: Session = Depends(get_db)
 ) -> List[QuoteResponses]:
-    return db.query(Quote).all()
+    newList = []
+    quotes = db.query(Quote).filter(Quote.user_id == user.id).all()
+    for quote in quotes:
+        client = db.query(Client).filter(
+            Client.id == quote.client_id).one_or_none()
+        if (client):
+            quote.client = client
+        newList.append(quote)
+    return newList
 
 
 async def update(
     update_post: QuoteUpdate,
     id: UUID,
-    access=Depends(get_access_user),
+    user: User = Depends(get_access_user),
     db: Session = Depends(get_db),
 ):
     quote_query = db.query(Quote).filter(Quote.id == id)
@@ -99,7 +109,7 @@ async def update(
             detail="Quote with id: {} does not exist".format(id),
         )
 
-    if update_post.client_id != quote.client_id or update_post.user_id != quote.user_id:
+    if update_post.client_id != quote.client_id or user.id != quote.user_id:
         raise HTTPException(
             status_code=status.HTTP_403_FORBIDDEN,
             detail="Not authorized to perform requested action",

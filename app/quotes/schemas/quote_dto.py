@@ -3,6 +3,7 @@ from uuid import UUID
 from typing import List, Optional
 from datetime import datetime
 from pydantic import BaseModel, Field
+from app.common.schemas.client import ClientDataResponse
 from app.quotes.schemas.comment_dto import CommentBase, CommentResponse
 
 from app.quotes.schemas.detail_dto import DetailBase, DetailResponse
@@ -15,7 +16,6 @@ class QuoteBase(BaseModel):
     exp_date: datetime = Field(..., alias="expirationDate")
     quote_status: Optional[bool] = Field(None, alias="quoteStatus")
     # TODO: extract from token
-    user_id: UUID = Field(..., alias="userId")
     client_id: UUID = Field(..., alias="clientId")
 
 
@@ -43,7 +43,8 @@ class HttpResponse(BaseModel):
 
 
 class QuoteResponses(QuoteResponse):
-    details: Optional[List[DetailResponse]]
+    client: Optional[ClientDataResponse]
+    detail: Optional[DetailResponse]
     items: Optional[List[ItemResponse]]
     taxes: Optional[List[TaxResponse]]
     comments: Optional[List[CommentResponse]]
