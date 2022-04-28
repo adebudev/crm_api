@@ -1,14 +1,11 @@
 import datetime
 import uuid
 
-import pytest
 from app.quotes.schemas.quote_dto import QuoteResponse, QuoteResponses
 
-# TODO: protect routes
 
-
-def test_get_quotes(quote_base, test_app):
-    res = test_app.get("/quotes/")
+def test_get_quotes(authorized_client, quote_base):
+    res = authorized_client.get("/quotes/")
 
     def validate_quote(quote):
         return QuoteResponses(**quote)
@@ -19,7 +16,7 @@ def test_get_quotes(quote_base, test_app):
     assert res.status_code == 200
 
 
-def test_post_quotes(test_app, test_user, test_client):
+def test_post_quotes(authorized_client, test_user, test_client):
     quote_data = {
         "quote": {
             "quoteNumber": 100,
@@ -53,7 +50,7 @@ def test_post_quotes(test_app, test_user, test_client):
         "taxes": [{"taxName": "iva", "taxValue": 20.3}],
         "comment": {"comment": "comment test 1"},
     }
-    res = test_app.post("/quotes/", json=quote_data)
+    res = authorized_client.post("/quotes/", json=quote_data)
 
     created_quote = QuoteResponse(**res.json())
     assert res.status_code == 201
@@ -61,7 +58,7 @@ def test_post_quotes(test_app, test_user, test_client):
     assert str(created_quote.user_id) == test_user["id"]
 
 
-def test_put_quotes(test_app, test_user, test_client, quote_base):
+def test_put_quotes(authorized_client, test_user, test_client, quote_base):
     data = {
         "id": str(quote_base[1].id),
         "quoteNumber": 5,
@@ -70,18 +67,18 @@ def test_put_quotes(test_app, test_user, test_client, quote_base):
         "expirationDate": str(datetime.datetime.now()),
         "quoteStatus": True,
     }
-    res = test_app.put(f"/quotes/{quote_base[1].id}", json=data)
+    res = authorized_client.put(f"/quotes/{quote_base[1].id}", json=data)
     updated_quote = QuoteResponse(**res.json())
     assert res.status_code == 200
     assert updated_quote.quote_num == 5
     assert updated_quote.quote_status == True
 
 
-def test_delete_quotes(test_app, quote_base):
-    res = test_app.delete(f"/quotes/{quote_base[1].id}")
+def test_delete_quotes(authorized_client, quote_base):
+    res = authorized_client.delete(f"/quotes/{quote_base[1].id}")
     assert res.status_code == 200
 
 
-def test_delete_quotes_with_no_id(test_app, quote_base):
-    res = test_app.delete(f"/quotes/{uuid.uuid4()}")
+def test_delete_quotes_with_no_id(authorized_client, quote_base):
+    res = authorized_client.delete(f"/quotes/{uuid.uuid4()}")
     assert res.status_code == 404
