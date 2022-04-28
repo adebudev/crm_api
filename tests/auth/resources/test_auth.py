@@ -1,7 +1,5 @@
-import json
-
 import pytest
-from app.auth.schemas.token import Token
+from app.auth.schemas.user import LoginResponse
 from app.common.config import settings
 from jose import jwt
 
@@ -12,12 +10,11 @@ def test_log_in(test_app, test_user_auth):
         json={"email": test_user_auth["email"], "password": test_user_auth["password"]},
     )
 
-    login_res = Token(**res.json())
-    payload = jwt.decode(
-        login_res.access_token, settings.secret_key, algorithms=[settings.algorithm]
-    )
+    login_res = LoginResponse(**res.json())
+    cookie = res.cookies.get("access_token")
+    payload = jwt.decode(cookie, settings.secret_key, algorithms=[settings.algorithm])
     id = payload.get("user_id")
-    assert id == json.dumps(str(test_user_auth["id"]))
+    assert id == str(test_user_auth["id"])
     assert login_res.token_type == "Bearer"
     assert res.status_code == 200
 

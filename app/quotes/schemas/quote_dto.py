@@ -50,8 +50,4 @@ class QuoteResponses(QuoteResponse):
 
 
 class QuoteUpdate(QuoteBase):
-    quote: QuoteBase
-    detail: Optional[DetailBase]
-    items: Optional[List[ItemBase]]
-    taxes: Optional[List[TaxBase]]
-    comments: Optional[CommentBase]
+    pass
