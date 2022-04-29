@@ -23,6 +23,6 @@ async def send_email_asynchronous(user_email: UserResponseEmail = Depends(send_e
     return user_email
 
 
-@router.put('/reset-password/{id}', status_code=status.HTTP_200_OK, response_model=UserResponse)
+@router.put('/reset-password/', status_code=status.HTTP_200_OK, response_model=UserResponse)
 def new_password(user: UserResponse = Depends(update_password)):
     return user

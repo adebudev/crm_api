@@ -71,9 +71,7 @@ async def send_email(user_email: UserEmail, db: Session = Depends(get_db)) -> Us
         })
 
 
-def update_password(user_password: UserUpdatePassword, id: UUID, db: Session = Depends(get_db)) -> UserResponse:
-    user: User = db.query(User).filter(User.id == id).one_or_none()
-
+def update_password(user_password: UserUpdatePassword, user: User = Depends(get_access_user), db: Session = Depends(get_db)) -> UserResponse:
     if not user:
         raise HTTPException(
             status_code=status.HTTP_400_BAD_REQUEST,
