@@ -1,6 +1,6 @@
 from typing import List
 
-from app.quotes.repository.quote import create, delete, get_all, update
+from app.quotes.repository.quote import create, delete, get_all, get_by_Id, update
 from app.quotes.schemas.quote_dto import HttpResponse, QuoteResponse, QuoteResponses
 from fastapi import APIRouter, Depends, status
 
@@ -16,6 +16,9 @@ async def create_quote(quote: QuoteResponse = Depends(create)):
 async def get_quotes(quotes: List[QuoteResponses] = Depends(get_all)):
     return quotes
 
+@router.get("/{id}", status_code=status.HTTP_200_OK)
+async def get_quote(quote: QuoteResponses = Depends(get_by_Id)):
+    return quote
 
 @router.put("/{id}", status_code=status.HTTP_200_OK, response_model=QuoteResponse)
 async def update_quote(quote: QuoteResponse = Depends(update)):

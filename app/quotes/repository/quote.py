@@ -94,6 +94,12 @@ def get_all(
         newList.append(quote)
     return newList
 
+def get_by_Id(
+    id: UUID,
+    user: User = Depends(get_access_user), db: Session = Depends(get_db)
+) -> QuoteResponses:
+    quotes = db.query(Quote).filter(Quote.id == id).one_or_none()
+    return quotes
 
 async def update(
     update_post: QuoteUpdate,
